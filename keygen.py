@@ -1,6 +1,5 @@
 import math
 import os
-import json
 
 # Function to check if a number is prime
 def is_prime(n):
@@ -11,7 +10,7 @@ def is_prime(n):
             return False
     return True
 
-# Function to generate two large prime numbers
+# Function to generate large prime numbers
 def generate_large_primes():
     while True:
         p = int.from_bytes(os.urandom(6), byteorder='big') | 1  # 6-byte primes
@@ -32,14 +31,20 @@ def generate_rsa_keys():
             break
 
     d = pow(e, -1, phi)
-    return {"p": p, "q": q, "n": n, "e": e, "d": d}
+    return e, d, n
 
-# Generate and save keys
+# Save keys to files
 def save_keys():
-    keys = generate_rsa_keys()
-    with open("rsa_keys.json", "w") as file:
-        json.dump(keys, file)
-    print("RSA keys generated and saved to 'rsa_keys.json'.")
+    e, d, n = generate_rsa_keys()
+
+    with open("public_key.txt", "w") as pub_file:
+        pub_file.write(f"{e},{n}")
+
+    with open("private_key.txt", "w") as priv_file:
+        priv_file.write(f"{d},{n}")
+
+    print("RSA Keys Generated!")
+    print("Saved 'public_key.txt' and 'private_key.txt'.")
 
 if __name__ == "__main__":
     save_keys()
